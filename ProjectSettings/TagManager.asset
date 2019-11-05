@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Infestable
   - InfestBlocker
+  - ScienceDoor
+  - NormalDoor
+  - SecurityDoor
   layers:
   - Default
   - TransparentFX
@@ -16,7 +19,7 @@ TagManager:
   - 
   - 
   - Enemy
-  - 
+  - Interactable
   - 
   - 
   - 

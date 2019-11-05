@@ -10,15 +10,16 @@ public class FadeOut : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        m_baseColour = GetComponent<MeshRenderer>().material.color;
+        m_baseColour = GetComponent<SpriteRenderer>().material.color;
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         m_baseColour.a -= m_fadeTime * Time.deltaTime;
         if (m_baseColour.a > 0.0f)
         {  
-            GetComponent<MeshRenderer>().material.color = m_baseColour;
+            GetComponent<SpriteRenderer>().material.color = m_baseColour;
         }
 	}
 }

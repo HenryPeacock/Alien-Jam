@@ -69,6 +69,10 @@ public class PlayerController : MonoBehaviour {
         {
             CheckInfest();
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CheckIfInteractable();
+        }
     }
 
     // Make the player object look at the mouse
@@ -122,13 +126,13 @@ public class PlayerController : MonoBehaviour {
         if (m_distToTravel.magnitude < m_infestRange)
         {
             // If it is, set values to fly toward the new target
-            m_infestedTransform.gameObject.GetComponent<NPC>().ToggleInfested();
+            //m_infestedTransform.gameObject.GetComponent<NPC>().ToggleInfested();
             m_infestedTransform = m_playerTransform;
             m_flying = true;
             m_startTime = System.DateTime.Now.Ticks;
             m_playerVisual.SetActive(true);
             m_indicateInfest.SetActive(false);
-            _toInfest.gameObject.GetComponent<NPC>().ToggleInfested();
+            //_toInfest.gameObject.GetComponent<NPC>().ToggleInfested();
         }
         else
         {
@@ -172,8 +176,9 @@ public class PlayerController : MonoBehaviour {
         GameObject ring = Instantiate(m_AreaOfEffect) as GameObject;
         // Connect it to the player
         ring.transform.parent = m_infestedTransform;
-        // Make it remain with the player
-        ring.transform.localPosition = new Vector3(0.0f,0.0f,0.0f);
+        // Make it remain with the player but on the floor
+        float yPos = 0.01f - m_infestedTransform.position.y;
+        ring.transform.localPosition = new Vector3(0.0f,yPos,0.0f);
         // Destroy it after 1 second
         Destroy(ring, 0.5f);
     }
@@ -181,9 +186,11 @@ public class PlayerController : MonoBehaviour {
     // Check if there's an object between the current infested and the attempted new one
     bool CheckInfestForWalls(Vector3 _targetPos)
     {
+        //
+        Vector3 directionToTarget = _targetPos - m_infestedTransform.position;
         // Cast a ray from self to target
-        Ray ray= new Ray(m_infestedTransform.position, _targetPos - m_infestedTransform.position);
-        Debug.DrawRay(m_infestedTransform.position, _targetPos- m_infestedTransform.position, Color.green);
+        Ray ray= new Ray(m_infestedTransform.position, directionToTarget);
+        Debug.DrawRay(m_infestedTransform.position, directionToTarget, Color.green);
         // Save in an array of objects hit
         RaycastHit[] hits;
         hits = Physics.RaycastAll(ray);
@@ -193,9 +200,12 @@ public class PlayerController : MonoBehaviour {
             Debug.Log(hits[i].transform.tag);
             if (hits[i].transform.tag == "InfestBlocker")
             {
-                AlertPing(hits[i].point, hits[i].transform);
-                Debug.Log("Blocked");
-                return false;
+                if (directionToTarget.magnitude > (hits[i].point - m_infestedTransform.position).magnitude)
+                {
+                    AlertPing(hits[i].point, hits[i].transform);
+                    Debug.Log("Blocked");
+                    return false;
+                }
             }
         }
         return true;
@@ -210,4 +220,67 @@ public class PlayerController : MonoBehaviour {
         alert.transform.position = _pingPos;
         Destroy(alert, 0.5f);
     }
+
+    // Check if the object the player is attempting to interact with is actually an interactable object
+    void CheckIfInteractable()
+    {
+        //Debug.Log("Checking Interact");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(ray);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            //Debug.Log(hits[i].transform.tag);
+            if (hits[i].transform.gameObject.layer == LayerMask.NameToLayer("Interactable"))
+            {
+                //Debug.Log("checking tag");
+                if (CheckIfInInteractRange(hits[i].transform))
+                {
+                    if (hits[i].transform.tag == "NormalDoor")
+                    {
+                        OpenDoor(0, hits[i].transform);
+                    }
+
+                }
+            }
+        }
+    }
+
+    bool CheckIfInInteractRange(Transform _attemptedInteract)
+    {
+        return true;
+    }
+
+    void InteractWithObject(Transform _object)
+    {
+
+    }
+
+    void OpenDoor(int _doorType, Transform _toOpen)
+    {
+        if (_doorType == 0)
+        {
+            //Debug.Log("Made it");
+            _toOpen.parent.gameObject.GetComponent<DoorScript>().OpenToggle();
+        }
+    }
+
+    void FlipSwitch(Transform _switch)
+    {
+
+    }
+
+    void TurnOffCamera(Transform _camera)
+    {
+
+    }
+
+    void EnterSpaceship(Transform _spaceship)
+    {
+
+    }
+
+
 }
+
+
