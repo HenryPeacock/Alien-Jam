@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject m_indicateInfest;
     public GameObject m_AreaOfEffect;
     public AudioSource m_nope;
+    public GameObject m_alertPing;
     // Declaring private variables
     private Transform m_playerTransform;
     private Transform m_target;
@@ -95,16 +96,19 @@ public class PlayerController : MonoBehaviour {
     // Check if the object the player is attempting to infest is actually infestable
     void CheckInfest()
     {
-        Ray ray2 = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray2);
+        hits = Physics.RaycastAll(ray);
         for (int i = 0; i < hits.Length; i++)
         {
-            Debug.Log(hits[i].transform.tag);
+            //Debug.Log(hits[i].transform.tag);
             if ((hits[i].transform.tag == "Infestable") && (hits[i].transform != m_infestedTransform))
             {
-                Infest(hits[i].transform);
-                i = hits.Length;
+                if (CheckInfestForWalls(hits[i].transform.position))
+                {
+                    Infest(hits[i].transform);
+                    i = hits.Length;
+                }
             }
         }
     }
@@ -118,11 +122,13 @@ public class PlayerController : MonoBehaviour {
         if (m_distToTravel.magnitude < m_infestRange)
         {
             // If it is, set values to fly toward the new target
+            m_infestedTransform.gameObject.GetComponent<NPC>().ToggleInfested();
             m_infestedTransform = m_playerTransform;
             m_flying = true;
             m_startTime = System.DateTime.Now.Ticks;
             m_playerVisual.SetActive(true);
             m_indicateInfest.SetActive(false);
+            _toInfest.gameObject.GetComponent<NPC>().ToggleInfested();
         }
         else
         {
@@ -153,29 +159,55 @@ public class PlayerController : MonoBehaviour {
     // If the Infest is out of range, give the player feedback
     void InfestOutofRange()
     {
-        Debug.Log("Fuck off");
+        Debug.Log("Out of range");
         m_nope.Play();
-
-        Invoke("DisplayRing", 0);
-
+        DisplayRing();
     }
 
+    // Display the range ring
     void DisplayRing()
     {
         Debug.Log("Hello There");
-        GameObject SteveO = Instantiate(m_AreaOfEffect) as GameObject;
-        SteveO.transform.position = m_playerTransform.position;
-        //bool exitFlag = false;
-        /*while (exitFlag)
-        {
-
-            if ()
-            {
-                exitFlag = true;
-            }
-        }*/
-        Destroy(SteveO, 1.0f);
-        // destoy texture here
+        // Create the ring object
+        GameObject ring = Instantiate(m_AreaOfEffect) as GameObject;
+        // Connect it to the player
+        ring.transform.parent = m_infestedTransform;
+        // Make it remain with the player
+        ring.transform.localPosition = new Vector3(0.0f,0.0f,0.0f);
+        // Destroy it after 1 second
+        Destroy(ring, 0.5f);
     }
 
+    // Check if there's an object between the current infested and the attempted new one
+    bool CheckInfestForWalls(Vector3 _targetPos)
+    {
+        // Cast a ray from self to target
+        Ray ray= new Ray(m_infestedTransform.position, _targetPos - m_infestedTransform.position);
+        Debug.DrawRay(m_infestedTransform.position, _targetPos- m_infestedTransform.position, Color.green);
+        // Save in an array of objects hit
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(ray);
+        // Iterate through all objects hit and if there's any blockers, return that it cannot pass
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Debug.Log(hits[i].transform.tag);
+            if (hits[i].transform.tag == "InfestBlocker")
+            {
+                AlertPing(hits[i].point, hits[i].transform);
+                Debug.Log("Blocked");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Ping an alert at the location of failure
+    void AlertPing(Vector3 _pingPos, Transform objectHit)
+    {
+        float height = objectHit.localScale.y;
+        _pingPos += new Vector3(0.0f, height, 0.0f);
+        GameObject alert = Instantiate(m_alertPing) as GameObject;
+        alert.transform.position = _pingPos;
+        Destroy(alert, 0.5f);
+    }
 }
