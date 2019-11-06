@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
@@ -13,7 +14,13 @@ public class PlayerController : MonoBehaviour {
     public GameObject m_indicateInfest;
     public GameObject m_AreaOfEffect;
     public AudioSource m_nope;
+    public AudioSource m_presMusic;
+    public AudioSource m_startMusic;
+    public AudioSource m_jumpSound;
     public GameObject m_alertPing;
+    public string job;
+    public Text jobText;
+    public Animator anim;
     // Declaring private variables
     private Transform m_playerTransform;
     private Transform m_target;
@@ -26,6 +33,8 @@ public class PlayerController : MonoBehaviour {
     void Start()
     {
         m_playerTransform = GetComponent<Transform>();
+        m_infestedTransform.GetChild(0).gameObject.SetActive(false);
+        m_startMusic.Play();
     }
 
     // Update is called once per frame
@@ -73,6 +82,11 @@ public class PlayerController : MonoBehaviour {
         {
             CheckIfInteractable();
         }
+        if (anim)
+        {
+            anim.SetBool("isMoving", (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)));
+        }
+
     }
 
     // Make the player object look at the mouse
@@ -126,13 +140,19 @@ public class PlayerController : MonoBehaviour {
         if (m_distToTravel.magnitude < m_infestRange)
         {
             // If it is, set values to fly toward the new target
-            //m_infestedTransform.gameObject.GetComponent<NPC>().ToggleInfested();
+            m_infestedTransform.gameObject.GetComponent<NPC>().ToggleInfested();
+            m_infestedTransform.GetChild(0).gameObject.SetActive(true);
             m_infestedTransform = m_playerTransform;
             m_flying = true;
             m_startTime = System.DateTime.Now.Ticks;
             m_playerVisual.SetActive(true);
             m_indicateInfest.SetActive(false);
-            //_toInfest.gameObject.GetComponent<NPC>().ToggleInfested();
+            m_target.GetChild(0).gameObject.SetActive(false);
+            _toInfest.gameObject.GetComponent<NPC>().ToggleInfested();
+            job = _toInfest.GetComponent<NPC>().job;
+            anim = _toInfest.GetComponent<NPC>().anim;
+            jobText.text = job;
+            m_jumpSound.Play();
         }
         else
         {
@@ -214,8 +234,9 @@ public class PlayerController : MonoBehaviour {
     // Ping an alert at the location of failure
     void AlertPing(Vector3 _pingPos, Transform objectHit)
     {
-        float height = objectHit.localScale.y;
-        _pingPos += new Vector3(0.0f, height, 0.0f);
+        //float sheight = objectHit.localScale.y;
+        //float height = objectHit.localPosition.y;
+        _pingPos += new Vector3(0.0f, 5.0f, 0.0f);
         GameObject alert = Instantiate(m_alertPing) as GameObject;
         alert.transform.position = _pingPos;
         Destroy(alert, 0.5f);
@@ -224,7 +245,7 @@ public class PlayerController : MonoBehaviour {
     // Check if the object the player is attempting to interact with is actually an interactable object
     void CheckIfInteractable()
     {
-        //Debug.Log("Checking Interact");
+        Debug.Log("Checking Interact");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits;
         hits = Physics.RaycastAll(ray);
@@ -233,12 +254,41 @@ public class PlayerController : MonoBehaviour {
             //Debug.Log(hits[i].transform.tag);
             if (hits[i].transform.gameObject.layer == LayerMask.NameToLayer("Interactable"))
             {
-                //Debug.Log("checking tag");
+                Debug.Log("checking tag");
                 if (CheckIfInInteractRange(hits[i].transform))
                 {
                     if (hits[i].transform.tag == "NormalDoor")
                     {
                         OpenDoor(0, hits[i].transform);
+                    }
+                    if (hits[i].transform.tag == "ScienceDoor")
+                    {
+                        if (job == "Scientist")
+                        {
+                            OpenDoor(1, hits[i].transform);
+                        }
+                    }
+
+                    if (hits[i].transform.tag == "SecurityDoor")
+                    {
+                        if (job == "Guard")
+                        {
+                            OpenDoor(2, hits[i].transform);
+                        }
+                    }
+                    if (hits[i].transform.tag == "AstronautDoor")
+                    {
+                        if (job == "Astronaut")
+                        {
+                            OpenDoor(3, hits[i].transform);
+                        }
+                    }
+                    if (hits[i].transform.tag == "PoliceDoor")
+                    {
+                        if (job == "Police")
+                        {
+                            OpenDoor(4, hits[i].transform);
+                        }
                     }
 
                 }
@@ -258,11 +308,36 @@ public class PlayerController : MonoBehaviour {
 
     void OpenDoor(int _doorType, Transform _toOpen)
     {
+        Debug.Log("IntoFunc");
         if (_doorType == 0)
         {
-            //Debug.Log("Made it");
+            Debug.Log("Made it Nornal");
             _toOpen.parent.gameObject.GetComponent<DoorScript>().OpenToggle();
         }
+        if (_doorType == 1)
+        {
+            Debug.Log("Made it Science");
+            _toOpen.parent.gameObject.GetComponent<OpenSliding>().OpenToggle();
+        }
+
+        if (_doorType == 2)
+        {
+            Debug.Log("Made it Security");
+            _toOpen.parent.gameObject.GetComponent<DoorScript>().OpenToggle();
+        }
+
+        if (_doorType == 3)
+        {
+            Debug.Log("Made it Astronaut");
+            _toOpen.parent.gameObject.GetComponent<OpenSliding>().OpenToggle();
+        }
+
+        if (_doorType == 4)
+        {
+            Debug.Log("Made it Polics");
+            _toOpen.parent.gameObject.GetComponent<DoorScript>().OpenToggle();
+        }
+
     }
 
     void FlipSwitch(Transform _switch)
@@ -280,7 +355,11 @@ public class PlayerController : MonoBehaviour {
 
     }
 
-
+    void EnterPresident()
+    {
+        m_startMusic.Pause();
+        m_presMusic.Play();
+    }
 }
 
 

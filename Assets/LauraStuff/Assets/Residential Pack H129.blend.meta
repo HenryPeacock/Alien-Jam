@@ -1,0 +1,202 @@
+fileFormatVersion: 2
+guid: b318f1b89d875554690da2baf0aba2ff
+timeCreated: 1573002403
+licenseType: Free
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Material_Preview_Dummy
+    100002: Plane
+    100004: //RootNode
+    100006: Residential1_0
+    100008: Residential1_1
+    100010: Residential2_0
+    100012: Residential2_1
+    100014: Residential3_0
+    100016: Residential3_1
+    100018: Residential4_0
+    100020: Residential4_1
+    100022: Residential5_0
+    100024: Residential5_1
+    100026: Residential6_0
+    100028: Residential6_1
+    100030: Residential7_0
+    100032: Residential7_1
+    100034: Residential8_0
+    100036: Residential8_1
+    100038: Residential9_0
+    100040: Residential9_1
+    400000: Material_Preview_Dummy
+    400002: Plane
+    400004: //RootNode
+    400006: Residential1_0
+    400008: Residential1_1
+    400010: Residential2_0
+    400012: Residential2_1
+    400014: Residential3_0
+    400016: Residential3_1
+    400018: Residential4_0
+    400020: Residential4_1
+    400022: Residential5_0
+    400024: Residential5_1
+    400026: Residential6_0
+    400028: Residential6_1
+    400030: Residential7_0
+    400032: Residential7_1
+    400034: Residential8_0
+    400036: Residential8_1
+    400038: Residential9_0
+    400040: Residential9_1
+    2100000: Misc_Base_Mesh
+    2100002: Material_001
+    2100004: Glass_Ray_glass_3
+    2100006: Material_004
+    2100008: Material_005
+    2100010: Material_011
+    2100012: Material_010
+    2100014: Material_009
+    2100016: Material_008
+    2100018: Material_007
+    2100020: Material_006
+    2300000: Material_Preview_Dummy
+    2300002: Plane
+    2300004: Residential1_0
+    2300006: Residential1_1
+    2300008: Residential2_0
+    2300010: Residential2_1
+    2300012: Residential3_0
+    2300014: Residential3_1
+    2300016: Residential4_0
+    2300018: Residential4_1
+    2300020: Residential5_0
+    2300022: Residential5_1
+    2300024: Residential6_0
+    2300026: Residential6_1
+    2300028: Residential7_0
+    2300030: Residential7_1
+    2300032: Residential8_0
+    2300034: Residential8_1
+    2300036: Residential9_0
+    2300038: Residential9_1
+    3300000: Material_Preview_Dummy
+    3300002: Plane
+    3300004: Residential1_0
+    3300006: Residential1_1
+    3300008: Residential2_0
+    3300010: Residential2_1
+    3300012: Residential3_0
+    3300014: Residential3_1
+    3300016: Residential4_0
+    3300018: Residential4_1
+    3300020: Residential5_0
+    3300022: Residential5_1
+    3300024: Residential6_0
+    3300026: Residential6_1
+    3300028: Residential7_0
+    3300030: Residential7_1
+    3300032: Residential8_0
+    3300034: Residential8_1
+    3300036: Residential9_0
+    3300038: Residential9_1
+    4300000: Plane
+    4300002: Material_Preview_Dummy
+    4300004: Residential9_0
+    4300006: Residential9_1
+    4300008: Residential8_0
+    4300010: Residential8_1
+    4300012: Residential7_1
+    4300014: Residential7_0
+    4300016: Residential6_1
+    4300018: Residential6_0
+    4300020: Residential5_1
+    4300022: Residential5_0
+    4300024: Residential4_0
+    4300026: Residential4_1
+    4300028: Residential3_0
+    4300030: Residential3_1
+    4300032: Residential2_1
+    4300034: Residential2_0
+    4300036: Residential1_1
+    4300038: Residential1_0
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

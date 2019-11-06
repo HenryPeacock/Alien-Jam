@@ -1,0 +1,31 @@
+Post Processing Profil
+
+-Antialiasing
+	Fast approximate AA
+	Extreme Quality
+-AO
+	Intensity 1.2
+	Radius 0.3
+	Sample Count High
+	Downsmapling
+-DoF
+	Focus distance 2.5
+	Aperture 12.6
+	Focal Lenght 50
+-Bloom
+	Intensity 0.7
+	Threshold 1.1
+	Soft Knee 0.86
+	Anti Flicker ON
+-Color Grading
+	Filmic (ACES)
+	Post exposure 0.5
+	Temperature 4
+	Tint 25
+	Hue Shift 0
+	Saturation 1.05
+	Contrast 1.05
+	Trackballs Linear
+
+
+contact : nauthilusgames@gmail.com

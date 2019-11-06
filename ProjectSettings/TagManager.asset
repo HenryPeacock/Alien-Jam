@@ -9,6 +9,8 @@ TagManager:
   - ScienceDoor
   - NormalDoor
   - SecurityDoor
+  - AstronautDoor
+  - PoliceDoor
   layers:
   - Default
   - TransparentFX

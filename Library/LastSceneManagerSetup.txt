@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Henry_Trash/HenryTestScene.unity
+- path: Assets/Scenes/HenryTestScene.unity
   isLoaded: 1
   isActive: 1

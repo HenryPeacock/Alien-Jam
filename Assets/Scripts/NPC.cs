@@ -4,38 +4,38 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class NPC : MonoBehaviour {
+    public string job;
     public bool infested;
-    NavMeshAgent agent;
-    GameObject player;
-    [SerializeField]
-	int mood = 0;
-    [SerializeField]
-    int suspicion = 0;
-
-    int movetimer = 0;
-    Vector3 movePos;
-
     public Transform[] waypoints;
     public int waypointPos = 0;
+    public Animator anim;
+    public Rigidbody rb;
 
-    [SerializeField]
-    Vector3 investigatePos;
-    int layerMask;
-    [SerializeField]
-    bool isSeeing;
+    public int mood = 0;
+    public int suspicion = 0;
+    public bool isSeeing;
+    public Vector3 investigatePos;
+
+    public NavMeshAgent agent;
+    public GameObject player;
+    public int movetimer = 0;
+    public Vector3 movePos;
+    public int layerMask;
+
     // Use this for initialization
-    void Start () {
+    virtual public void Start () {
         agent = GetComponent<NavMeshAgent>();
         layerMask = 1 << LayerMask.NameToLayer("Enemy");
         layerMask = ~layerMask;
+        movePos = transform.position;
     }
 	
 	// Update is called once per frame
-	void Update () {
+	virtual public void Update () {
         if (!infested){
             player = GameObject.FindGameObjectWithTag("Player");
             isSeeing = canSee(player.transform.position);
-            if (suspicion > 2000 && mood < 2){
+            if (suspicion > 1500 && mood < 2){
                 mood = 2;
             }
             else if (suspicion > 600 && mood < 1){
@@ -63,36 +63,63 @@ public class NPC : MonoBehaviour {
 
             if (isSeeing)
             {
-                suspicion++;
+                suspicion+= 3;
+                if (player.GetComponent<PlayerController>().m_flying) {
+                    mood = 2;
+                }
+            }
+            if (anim != null)
+            {
+                anim.SetBool("isMoving", agent.velocity.magnitude > 0);
             }
             else {
                 if (suspicion > 0){
                     suspicion--;
+                }
+                if (player.GetComponent<PlayerController>().m_flying && suspicion > 0) {
+                    suspicion = 500;
+                    mood = 1;
                 }
             }
         }
 	}
 
 	virtual public void Patrol(){
-        if (Vector3.Distance(transform.position, waypoints[waypointPos].position) < 5)
+        GetComponentInChildren<Light>().color = Color.white;
+        if (waypoints.Length > 1)
         {
-            waypointPos++;
-            if (waypointPos >= waypoints.Length)
+            if (Vector3.Distance(transform.position, waypoints[waypointPos].position) < 5)
             {
-                waypointPos = 0;
+                waypointPos++;
+                if (waypointPos >= waypoints.Length)
+                {
+                    waypointPos = 0;
+                }
+
             }
-            
+            else
+            {
+                agent.SetDestination(waypoints[waypointPos].position);
+            }
         }
         else {
-            agent.SetDestination(waypoints[waypointPos].position);
+            if (movetimer <= 0)
+            {
+                movePos = transform.position + new Vector3(Random.Range(-2.0f, 2.0f), 0, Random.Range(-2.0f, 2.0f));
+                movetimer = Random.Range(100, 500);
+            }
+            agent.SetDestination(movePos);
+            movetimer--;
         }
 	}
 
     virtual public void Suspicious() {
+        GetComponentInChildren<Light>().color = Color.yellow;
         if (suspicion > 600 && isSeeing)
         {
             investigatePos = player.transform.position;
             agent.SetDestination(investigatePos);
+            movetimer = 0;
         }
         else if (suspicion > 100 && isSeeing) {
             suspicion = 600;
@@ -110,10 +137,27 @@ public class NPC : MonoBehaviour {
     }
 
     virtual public void Angry() {
+        GetComponentInChildren<Light>().color = Color.red;
         suspicion = 3000;
         if (isSeeing)
         {
-            agent.SetDestination(player.transform.position);
+            agent.speed = 10;
+            agent.angularSpeed = 800;
+            investigatePos = player.transform.position;
+            agent.SetDestination(investigatePos);
+            movetimer = 0;
+        }
+        else
+        {
+            agent.speed = 3.5f;
+            agent.angularSpeed = 360;
+            if (movetimer <= 0)
+            {
+                movePos = investigatePos + new Vector3(Random.Range(-4.0f, 4.0f), 0, Random.Range(-4.0f, 4.0f));
+                movetimer = 200;
+            }
+            agent.SetDestination(movePos);
+            movetimer--;
         }
     }
 
@@ -128,16 +172,18 @@ public class NPC : MonoBehaviour {
     }
 
     virtual public void Alert(Vector3 alertPos) {
+        print("alert!");
         if (mood < 1)
         {
             mood = -1;
-            suspicion += 50;
+            suspicion += 500;
             investigatePos = alertPos;
         }
     }
 
     public void ToggleInfested() {
         infested = !infested;
+        agent.enabled = !infested;
         if (infested)
         {
             suspicion = 0;
@@ -145,13 +191,20 @@ public class NPC : MonoBehaviour {
         }
         else {
             suspicion = 600;
+            Invoke("Reactivate", 2);
+            GetComponent<NPC>().enabled = false;
         }
     }
 
 
-    bool canSee(Vector3 objPos) {
+    public bool canSee(Vector3 objPos) {
+        bool nearby = (Vector3.Distance(transform.position, objPos) < 3);
         bool lineOfSight = !Physics.Linecast(transform.position, objPos, layerMask);
         bool inViewCone = (Vector3.Distance(transform.position, objPos) < 20 && Vector3.Angle(transform.forward, (objPos - transform.position)) < 45);
-        return (lineOfSight && inViewCone);
+        return ((lineOfSight && inViewCone) || (nearby && lineOfSight));
+    }
+
+    public void Reactivate() {
+        GetComponent<NPC>().enabled = true;
     }
 }
